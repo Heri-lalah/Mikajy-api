@@ -12,9 +12,9 @@ class AuthController extends Controller
 
         $validation = $request->validate([
             'name' => ['required'],
-            'pseudo' => ['required'],
+            'pseudo' => ['required', 'unique:users,pseudo', 'regex:(^[a-zA-Z0-9])', 'max:15'],
             'phone_number' =>['required'],
-            'password' =>['required', 'min:4', 'confirmed'],
+            'password' =>['required', 'min:6', 'confirmed'],
             'password_confirmation' => ['required', 'same:password']
         ]);
 
@@ -26,8 +26,11 @@ class AuthController extends Controller
 
     }
 
-    public function login()
+    public function login(Request $request)
     {
-
+        $validation = $request->validate([
+            'pseudo' => ['required', 'unique:users,pseudo', 'regex:(^[a-zA-Z0-9])', 'max:15'],
+            'password' => ['required', 'min:6']
+        ]);
     }
 }
