@@ -19,11 +19,14 @@ class UserTest extends TestCase
     {
 
         //Create
+        $password = Hash::make('password');
+
         $user = [
             'name' => fake()->name,
             'pseudo' => fake()->firstName(),
             'phone_number' => Str::random(10),
-            'password' => Hash::make('password')
+            'password' => $password,
+            'password_confirmation' => $password
         ];
 
         //Action
@@ -31,5 +34,12 @@ class UserTest extends TestCase
 
         //Assertion
         $response->assertStatus(201);
+    }
+
+    public function test_user_can_login()
+    {
+        $user = User::first()->only(['pseudo', 'password']);
+
+        $response = $this->post('/api/login', $user);
     }
 }

@@ -14,7 +14,8 @@ class AuthController extends Controller
             'name' => ['required'],
             'pseudo' => ['required'],
             'phone_number' =>['required'],
-            'password' =>['required']
+            'password' =>['required', 'min:4', 'confirmed'],
+            'password_confirmation' => ['required', 'same:password']
         ]);
 
         $user = User::create($validation);
@@ -24,4 +25,5 @@ class AuthController extends Controller
         return response()->json(['_token' => $token, 'message' => "Authentication successfully"], 201);
 
     }
+
 }
