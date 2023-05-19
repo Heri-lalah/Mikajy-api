@@ -25,7 +25,9 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('login', 'login')->name('login');
 });
 
-Route::middleware('auth:sanctum')->group(function(){
-    Route::apiResource('expense', ExpenseController::class);
-});
+Route::apiResource('expense', ExpenseController::class)->middleware('auth:sanctum');
+
+// Route::middleware('auth:sanctum')->group(function(){
+//     Route::apiResource('expense', ExpenseController::class);
+// });
 

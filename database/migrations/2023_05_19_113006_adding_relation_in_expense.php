@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('phone_number')->after('email');
-            $table->string('pseudo')->unique()->after('name');
+        Schema::table('expenses', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->after('id');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-
+        Schema::table('expenses', function (Blueprint $table) {
+            //
         });
     }
 };

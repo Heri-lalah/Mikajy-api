@@ -21,7 +21,7 @@ class AuthenticationTest extends TestCase
         $password = Hash::make('password');
 
         $user = [
-            'name' => fake()->name,
+            'name' => fake()->name(),
             'pseudo' => fake()->firstName(),
             'phone_number' => Str::random(10),
             'password' => $password,
