@@ -14,13 +14,17 @@ class ExpenseController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private $expenses;
+
+    public function __construct()
+    {
+        $this->expenses = User::with('expenses')->find(Auth::user());
+    }
+
 
     public function index()
     {
-
-        $data = User::with('expenses')->find(Auth::user());
-
-        return response()->json(['expense' => $data]);
+        return response()->json(['expense' => $this->expenses]);
     }
 
     /**
@@ -53,7 +57,7 @@ class ExpenseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Expense $id)
     {
         //
     }
@@ -77,8 +81,8 @@ class ExpenseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        dd('eto');
     }
 }
