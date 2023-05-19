@@ -39,6 +39,8 @@ class AuthenticationTest extends TestCase
     {
         $user = User::first()->only(['pseudo', 'password']);
 
+        $user['password'] = 'password';
+
         $response = $this->post('/api/login', $user);
 
         $response->assertStatus(200);
