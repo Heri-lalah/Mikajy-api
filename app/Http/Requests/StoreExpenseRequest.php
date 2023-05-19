@@ -27,4 +27,12 @@ class StoreExpenseRequest extends FormRequest
             'user_id' => 'required',
         ];
     }
+
+    public function message():array
+    {
+        return [
+            'name.required' => 'nom dépense obligatoire',
+            'amount.requiredss' => 'montant obligatoire',
+        ];
+    }
 }

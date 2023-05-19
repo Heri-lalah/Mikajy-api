@@ -37,7 +37,7 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_login()
     {
-        $user = User::first()->only(['pseudo', 'password']);
+        $user = User::find(1)->only(['pseudo', 'password']);
 
         $user['password'] = 'password';
 
