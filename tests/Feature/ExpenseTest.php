@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
 
 class ExpenseTest extends TestCase
@@ -22,6 +23,8 @@ class ExpenseTest extends TestCase
 
         $this->user = User::find(1);
 
+        $this->withHeaders(['Accept' => 'application/json']);
+
         Sanctum::actingAs($this->user, ['*']);
     }
 
@@ -34,5 +37,18 @@ class ExpenseTest extends TestCase
 
     }
 
+    public function test_user_can_add_a_new_expense()
+    {
 
+        $data = [
+            'name' => fake()->word(),
+            'amount' => 1000,
+            'remark' => fake()->paragraph(1),
+            'user_id' => Auth::user()->id
+        ];
+
+        $response = $this->post(route('expense.store', $data));
+
+        $response->assertStatus(201);
+    }
 }

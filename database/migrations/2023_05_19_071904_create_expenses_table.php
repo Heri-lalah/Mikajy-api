@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('amount');
-            $table->string('currency');
+            $table->string('currency')->default('EUR');
             $table->string('remark')->nullable();
             $table->timestamps();
         });
