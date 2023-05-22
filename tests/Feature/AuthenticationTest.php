@@ -29,7 +29,7 @@ class AuthenticationTest extends TestCase
         ];
 
         //Action
-        $response = $this->post('/api/register', $user);
+        $response = $this->post('api/register', $user);
 
         //Assertion
         $response->assertStatus(201);
@@ -41,7 +41,7 @@ class AuthenticationTest extends TestCase
 
         $user['password'] = 'password';
 
-        $response = $this->post('/api/login', $user);
+        $response = $this->post('api/login', $user);
 
         $response->assertStatus(200);
     }

@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
 
@@ -25,7 +26,7 @@ class ExpenseTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::find(1);
+        $this->user = User::first();
 
         $this->withHeaders(['Accept' => 'application/json']);
 
@@ -35,7 +36,7 @@ class ExpenseTest extends TestCase
             'name' => fake()->word(),
             'amount' => rand(1,20) * 100,
             'remark' => fake()->paragraph(1),
-            'user_id' => Auth::user()->id
+            'user_id' => $this->user->id
         ];
 
         $this->firstExpenseId = Expense::first()->id;
@@ -56,15 +57,7 @@ class ExpenseTest extends TestCase
 
         $response = $this->post(route('expense.store', $this->fakeData));
 
-        $response->assertStatus(201);
-    }
-
-    public function test_user_can_destroy_expense()
-    {
-        $response = $this->delete(route('expense.destroy', ['id' => Expense::first()->id]));
-
-        $response->assertStatus(202);
-
+        $response->assertCreated();
     }
 
     public function test_user_can_update_expense()
@@ -78,6 +71,30 @@ class ExpenseTest extends TestCase
             'user_id' => $this->fakeData['user_id'],
         ]));
 
-        $response->assertStatus(202);
+        $response->assertAccepted();
+    }
+
+    public function test_user_can_show_expense()
+    {
+
+        $response =$this->get(route('expense.show', ['expense' => $this->firstExpenseId]));
+
+        $response->assertOk();
+
+    }
+
+    public function test_user_can_destroy_expense()
+    {
+        $response = $this->delete(route('expense.destroy', ['expense' => Expense::first()->id]));
+
+        $response->assertAccepted();
+
+    }
+
+    public function test_user_can_clear_all_expense()
+    {
+        $response =  $this->delete(route('expense.clear'));
+
+        $response->assertAccepted();
     }
 }

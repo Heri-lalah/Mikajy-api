@@ -19,6 +19,7 @@ class ExpenseController extends Controller
     public function __construct()
     {
         $this->expenses = User::with('expenses')->find(Auth::user());
+
     }
 
 
@@ -49,9 +50,9 @@ class ExpenseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Expense $id)
+    public function show(Expense $expense)
     {
-        //
+        return response()->json(['expense' => $expense], 200);
     }
 
 
@@ -85,5 +86,9 @@ class ExpenseController extends Controller
         $expense->delete();
 
         return response()->json(['message' => 'success'], 202);
+    }
+
+    public function clear() {
+        //dd(($this->expenses));
     }
 }
