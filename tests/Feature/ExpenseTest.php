@@ -17,6 +17,10 @@ class ExpenseTest extends TestCase
      */
     protected $user;
 
+    protected $fakeData;
+
+    protected $firstExpenseId;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -26,6 +30,16 @@ class ExpenseTest extends TestCase
         $this->withHeaders(['Accept' => 'application/json']);
 
         Sanctum::actingAs($this->user, ['*']);
+
+        $this->fakeData =  [
+            'name' => fake()->word(),
+            'amount' => rand(1,20) * 100,
+            'remark' => fake()->paragraph(1),
+            'user_id' => Auth::user()->id
+        ];
+
+        $this->firstExpenseId = Expense::first()->id;
+
     }
 
     public function test_user_can_get_his_expenses(): void
@@ -40,23 +54,30 @@ class ExpenseTest extends TestCase
     public function test_user_can_add_a_new_expense()
     {
 
-        $data = [
-            'name' => fake()->word(),
-            'amount' => 1000,
-            'remark' => fake()->paragraph(1),
-            'user_id' => Auth::user()->id
-        ];
-
-        $response = $this->post(route('expense.store', $data));
+        $response = $this->post(route('expense.store', $this->fakeData));
 
         $response->assertStatus(201);
     }
 
     public function test_user_can_destroy_expense()
     {
-        $response = $this->delete(route('expense.destroy', ['expense' => 1]));
+        $response = $this->delete(route('expense.destroy', ['id' => Expense::first()->id]));
 
         $response->assertStatus(202);
 
+    }
+
+    public function test_user_can_update_expense()
+    {
+
+        $response = $this->put(route('expense.update', [
+            'expense' => $this->firstExpenseId,
+            'name' => $this->fakeData['name'],
+            'amount' => $this->fakeData['amount'],
+            'remark' => $this->fakeData['remark'],
+            'user_id' => $this->fakeData['user_id'],
+        ]));
+
+        $response->assertStatus(202);
     }
 }
