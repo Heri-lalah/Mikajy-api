@@ -20,7 +20,6 @@ class ExpenseFactory extends Factory
         return [
             'name' => fake()->word(1),
             'amount' => rand(1,20) * 100,
-            'user_id' => User::find(rand(1, User::count() - 1)),
             'currency' => 'Ariary',
             'remark' => fake()->paragraph(1)
         ];

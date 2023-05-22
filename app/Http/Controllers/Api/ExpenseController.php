@@ -8,18 +8,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ExpenseController extends Controller
 {
+    private $expenses;
+
+    private $user;
     /**
      * Display a listing of the resource.
      */
-    private $expenses;
 
     public function __construct()
     {
-        $this->expenses = User::with('expenses')->find(Auth::user());
+        $this->expenses = User::find(Auth::user()->id)->expenses();
 
+        $this->user = User::find(Auth::user()->id);
     }
 
 
@@ -88,7 +92,19 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'success'], 202);
     }
 
-    public function clear() {
-        //dd(($this->expenses));
+    /**
+     * Remove all resources from storage.
+     */
+    public function clear(Request $request) {
+
+        if(!Hash::check($request->password, $this->user->password)){
+            return response()->json(['message' => 'incorrect password'], 403);
+        }
+
+        $this->expenses->each(function($item){
+            $item->delete();
+        });
+
+        return response()->json(['message' => "success"], 202);
     }
 }

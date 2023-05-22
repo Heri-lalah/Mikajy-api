@@ -93,7 +93,8 @@ class ExpenseTest extends TestCase
 
     public function test_user_can_clear_all_expense()
     {
-        $response =  $this->delete(route('expense.clear'));
+
+        $response =  $this->delete(route('expense.clear', ['password' => 'password']));
 
         $response->assertAccepted();
     }
