@@ -54,7 +54,7 @@ class ExpenseTest extends TestCase
 
     public function test_user_can_destroy_expense()
     {
-        $response = $this->delete(route('expense.destroy', ['id' => 23]));
+        $response = $this->delete(route('expense.destroy', ['expense' => 1]));
 
         $response->assertStatus(202);
 

@@ -81,8 +81,13 @@ class ExpenseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($expense)
     {
-        dd('eto');
+
+        $expense = Expense::findOrFail($expense);
+
+        $expense->delete();
+
+        return response()->json(['message' => 'success'], 202);
     }
 }
