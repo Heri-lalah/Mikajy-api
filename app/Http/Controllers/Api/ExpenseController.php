@@ -21,9 +21,11 @@ class ExpenseController extends Controller
 
     public function __construct()
     {
+
         $this->expenses = User::find(Auth::user()->id)->expenses();
 
         $this->user = User::find(Auth::user()->id);
+
     }
 
 
@@ -104,7 +106,6 @@ class ExpenseController extends Controller
         $this->expenses->each(function($item){
             $item->delete();
         });
-
         return response()->json(['message' => "success"], 202);
     }
 }

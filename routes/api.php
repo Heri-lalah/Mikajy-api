@@ -2,8 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\api\IncomeController;
+use App\Http\Controllers\Api\ExpenseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,12 @@ Route::controller(AuthController::class)->group(function(){
 
 
 Route::middleware('auth:sanctum')->group(function(){
+
+    //Route of Expense
     Route::apiResource('expense', ExpenseController::class);
     Route::delete('expenses', [ExpenseController::class, 'clear'])->name('expense.clear');
+
+    //Route of Income
+    Route::apiResource('income', IncomeController::class);  
 });
 

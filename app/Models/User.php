@@ -46,7 +46,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function expenses():HasMany {
+    public function expenses():HasMany
+    {
         return $this->hasMany(Expense::class);
+    }
+
+    public function incomes():HasMany
+    {
+        return $this->hasMany(Income::class);
     }
 }
