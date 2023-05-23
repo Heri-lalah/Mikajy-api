@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('expenses', [ExpenseController::class, 'clear'])->name('expense.clear');
 
     //Route of Income
-    Route::apiResource('income', IncomeController::class);  
+    Route::apiResource('income', IncomeController::class);
+    Route::delete('income', [IncomeController::class, 'clear'])->name('income.clear');
 });
 

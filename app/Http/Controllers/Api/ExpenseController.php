@@ -109,6 +109,7 @@ class ExpenseController extends Controller
         $this->expenses->each(function($item){
             $item->delete();
         });
+
         return response()->json(['message' => "success"], 202);
     }
 }

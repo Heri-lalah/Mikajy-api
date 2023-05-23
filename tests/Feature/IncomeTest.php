@@ -73,13 +73,29 @@ class IncomeTest extends TestCase
     public function test_user_can_update_income()
     {
 
-        $response = $this->put(route('income.update', ['income' => $this->firstincomeId,]), [
+        $response = $this->put(route('income.update', ['income' => $this->firstincomeId]), [
             'name' => $this->fakeData['name'],
             'amount' => $this->fakeData['amount'],
             'remark' => $this->fakeData['remark'],
             'currency' => $this->fakeData['currency'],
             'user_id' => $this->fakeData['user_id'],
         ]);
+
+        $response->assertAccepted();
+    }
+
+    public function test_user_can_destroy_income()
+    {
+        $response = $this->delete(route('income.destroy', ['income' => $this->firstincomeId]));
+
+        $response->assertAccepted();
+
+    }
+
+    public function test_user_can_clear_all_income()
+    {
+
+        $response =  $this->delete(route('income.clear'), ['password' => 'passwor']);
 
         $response->assertAccepted();
     }

@@ -18,6 +18,7 @@ class IncomeController extends Controller
 
     public function __construct()
     {
+
         $this->incomeRepository = IncomeRepository::getInstance();
 
     }
@@ -37,7 +38,6 @@ class IncomeController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-
         $data = [
             'name' => $request->name,
             'amount' => $request->amount,
@@ -81,6 +81,15 @@ class IncomeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->incomeRepository->deleteIncome($id);
+
+        return response()->json(['message', 'success'], 202);
+    }
+
+    public function clear(Request $request)
+    {
+        $this->incomeRepository->clearHisIncomes($request);
+
+        return response()->json(['message' => 'success'], 202);
     }
 }
