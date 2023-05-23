@@ -6,20 +6,20 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
+use App\Models\Income;
 use App\Repository\IncomeRepository;
 use Illuminate\Support\Facades\Auth;
 
 
 class IncomeController extends Controller
 {
-    private $incomeRepository;
-    public $user;
+
+    protected $incomeRepository;
 
     public function __construct()
     {
-     //   $this->incomeRepository = IncomeRepository::getInstance();
+        $this->incomeRepository = IncomeRepository::getInstance();
 
-       // $this->user = User::find(Auth::user());
     }
 
     /**
@@ -37,36 +37,43 @@ class IncomeController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        dd('eto');
-        $data = ['name' => $request->name,
+
+        $data = [
+            'name' => $request->name,
             'amount' => $request->amount,
             'remark' => $request->remark,
             'currency' => $request->currency,
         ];
 
+        $this->incomeRepository->storeIncome($data);
 
+        return response()->json($this->incomeRepository->getIncomes(), 201);
+    }
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
-    }
+        $data = $this->incomeRepository->showIncome($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($data, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreEventRequest $request, string $id)
     {
-        //
+        $data = [
+            'name' => $request->name,
+            'amount' => $request->amount,
+            'remark' => $request->remark,
+            'currency' => $request->currency,
+        ];
+
+        $updatedData = $this->incomeRepository->updateIncome($data, $id);
+
+        return response()->json($updatedData, 202);
     }
 
     /**

@@ -9,6 +9,7 @@ class IncomeRepository
 {
 
     protected static $instance;
+
     public $incomes;
 
     public static function getInstance()
@@ -27,11 +28,22 @@ class IncomeRepository
         return $this->incomes = User::find(Auth::user()->id)->incomes();
     }
 
-    public function setIncome(array $income)
+    public function storeIncome($income)
     {
 
-        $this->incomes->create($income);
+        return $this->getIncomes()->create($income);
 
-        return $this->incomes = $this->getIncomes();
+    }
+
+    public function showIncome($income)
+    {
+        return $this->getIncomes()->where('id', $income);
+    }
+
+    public function updateIncome($data, $id)
+    {
+        $income = $this->getIncomes()->where('id', $id);
+
+        return $income->update($data);
     }
 }

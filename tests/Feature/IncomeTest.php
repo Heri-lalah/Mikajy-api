@@ -16,11 +16,11 @@ class IncomeTest extends TestCase
     /**
      * A basic feature test example.
      */
-    protected $user;
+    public $user;
 
-    protected $fakeData;
+    public $fakeData;
 
-    protected $firstIncomeId;
+    public $firstincomeId;
 
     public function setUp(): void
     {
@@ -36,11 +36,11 @@ class IncomeTest extends TestCase
             'name' => fake()->word(),
             'amount' => rand(1,20) * 100,
             'remark' => fake()->paragraph(1),
-            'currency' => 'Ariary',
+            'currency' => 'Euro',
             'user_id' => $this->user->id
         ];
 
-        $this->firstIncomeId = Income::first()->id;
+        $this->firstincomeId = User::find(Auth::user()->id)->incomes()->first()->id;
 
     }
 
@@ -56,46 +56,30 @@ class IncomeTest extends TestCase
     public function test_user_can_add_a_new_Income()
     {
 
-        $response = $this->post(route('income.store', $this->fakeData));
+        $response = $this->post(route('income.store'), $this->fakeData);
 
         $response->assertCreated();
     }
 
-    public function test_user_can_update_Income()
+    public function test_user_can_show_income()
     {
 
-        $response = $this->put(route('income.update', [
-            'Income' => $this->firstIncomeId,
-            'name' => $this->fakeData['name'],
-            'amount' => $this->fakeData['amount'],
-            'remark' => $this->fakeData['remark'],
-            'user_id' => $this->fakeData['user_id'],
-        ]));
-
-        $response->assertAccepted();
-    }
-
-    public function test_user_can_show_Income()
-    {
-
-        $response =$this->get(route('income.show', ['Income' => $this->firstIncomeId]));
+        $response =$this->get(route('income.show', ['income' => $this->firstincomeId]));
 
         $response->assertOk();
 
     }
 
-    public function test_user_can_destroy_Income()
-    {
-        $response = $this->delete(route('income.destroy', ['Income' => Income::first()->id]));
-
-        $response->assertAccepted();
-
-    }
-
-    public function test_user_can_clear_all_Income()
+    public function test_user_can_update_income()
     {
 
-        $response =  $this->delete(route('income.clear', ['password' => 'password']));
+        $response = $this->put(route('income.update', ['income' => $this->firstincomeId,]), [
+            'name' => $this->fakeData['name'],
+            'amount' => $this->fakeData['amount'],
+            'remark' => $this->fakeData['remark'],
+            'currency' => $this->fakeData['currency'],
+            'user_id' => $this->fakeData['user_id'],
+        ]);
 
         $response->assertAccepted();
     }

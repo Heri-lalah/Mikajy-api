@@ -22,9 +22,9 @@ class ExpenseController extends Controller
     public function __construct()
     {
 
-        $this->expenses = User::find(Auth::user()->id)->expenses();
+        //$this->expenses = User::find(Auth::user()->id)->expenses();
 
-        $this->user = User::find(Auth::user()->id);
+        //$this->user = User::find(Auth::user()->id);
 
     }
 
