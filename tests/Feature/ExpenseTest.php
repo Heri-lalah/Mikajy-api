@@ -36,6 +36,7 @@ class ExpenseTest extends TestCase
             'name' => fake()->word(),
             'amount' => rand(1,20) * 100,
             'remark' => fake()->paragraph(1),
+            'currency' => 'EURO',
             'user_id' => $this->user->id
         ];
 
@@ -55,7 +56,7 @@ class ExpenseTest extends TestCase
     public function test_user_can_add_a_new_expense()
     {
 
-        $response = $this->post(route('expense.store', $this->fakeData));
+        $response = $this->post(route('expense.store'), $this->fakeData);
 
         $response->assertCreated();
     }
@@ -63,13 +64,13 @@ class ExpenseTest extends TestCase
     public function test_user_can_update_expense()
     {
 
-        $response = $this->put(route('expense.update', [
-            'expense' => $this->firstExpenseId,
+        $response = $this->put(route('expense.update', ['expense' => $this->firstExpenseId,]), [
             'name' => $this->fakeData['name'],
             'amount' => $this->fakeData['amount'],
             'remark' => $this->fakeData['remark'],
+            'currency' => $this->fakeData['currency'],
             'user_id' => $this->fakeData['user_id'],
-        ]));
+        ]);
 
         $response->assertAccepted();
     }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreExpenseRequest extends FormRequest
+class StoreEventRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,7 +31,7 @@ class StoreExpenseRequest extends FormRequest
     public function message():array
     {
         return [
-            'name.required' => 'nom dépense obligatoire',
+            'name.required' => 'nom obligatoire',
             'amount.requiredss' => 'montant obligatoire',
         ];
     }

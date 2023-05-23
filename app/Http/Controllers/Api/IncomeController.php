@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreEventRequest;
 use App\Repository\IncomeRepository;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,8 +17,9 @@ class IncomeController extends Controller
 
     public function __construct()
     {
-        $this->incomeRepository = IncomeRepository::getInstance();
-        $this->user = User::fin(Auth::user());
+     //   $this->incomeRepository = IncomeRepository::getInstance();
+
+       // $this->user = User::find(Auth::user());
     }
 
     /**
@@ -33,10 +35,15 @@ class IncomeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
-        //
-    }
+        dd('eto');
+        $data = ['name' => $request->name,
+            'amount' => $request->amount,
+            'remark' => $request->remark,
+            'currency' => $request->currency,
+        ];
+
 
     /**
      * Display the specified resource.

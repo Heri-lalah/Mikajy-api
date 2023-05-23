@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreExpenseRequest;
+use App\Http\Requests\StoreEventRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -37,12 +37,14 @@ class ExpenseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreExpenseRequest $request)
+    public function store(StoreEventRequest $request)
     {
 
         $expense = Expense::create([
             'name' => $request->name,
             'amount' => $request->amount,
+            'remark' => $request->remark,
+            'currency' => $request->currency,
             'user_id' => $request->user_id
         ]);
 
@@ -65,7 +67,7 @@ class ExpenseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreExpenseRequest $request, string $id)
+    public function update(StoreEventRequest $request, string $id)
     {
 
         $expense = Expense::findOrFail($id);
@@ -74,6 +76,7 @@ class ExpenseController extends Controller
             'name' => $request->name,
             'amount' => $request->amount,
             'remark' => $request->remark,
+            'currency' => $request->currency,
             'user_id' => Auth::user()->id
         ]);
 

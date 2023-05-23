@@ -36,10 +36,11 @@ class IncomeTest extends TestCase
             'name' => fake()->word(),
             'amount' => rand(1,20) * 100,
             'remark' => fake()->paragraph(1),
+            'currency' => 'Ariary',
             'user_id' => $this->user->id
         ];
 
-        $this->firstIncomeId = 1;
+        $this->firstIncomeId = Income::first()->id;
 
     }
 

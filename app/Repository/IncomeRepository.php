@@ -27,10 +27,10 @@ class IncomeRepository
         return $this->incomes = User::find(Auth::user()->id)->incomes();
     }
 
-    public function setIncome($income)
+    public function setIncome(array $income)
     {
 
-        $newIncome = Income::create($income);
+        $this->incomes->create($income);
 
         return $this->incomes = $this->getIncomes();
     }
