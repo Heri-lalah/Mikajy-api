@@ -95,7 +95,7 @@ class IncomeTest extends TestCase
     public function test_user_can_clear_all_income()
     {
 
-        $response =  $this->delete(route('income.clear'), ['password' => 'passwor']);
+        $response =  $this->delete(route('income.clear'), ['password' => 'password']);
 
         $response->assertAccepted();
     }

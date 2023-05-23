@@ -22,9 +22,9 @@ class ExpenseController extends Controller
     public function __construct()
     {
 
-        //$this->expenses = User::find(Auth::user()->id)->expenses();
+        $this->expenses = User::find(Auth::user()->id)->expenses();
 
-        //$this->user = User::find(Auth::user()->id);
+        $this->user = User::find(Auth::user()->id);
 
     }
 
@@ -100,8 +100,8 @@ class ExpenseController extends Controller
     /**
      * Remove all resources from storage.
      */
-    public function clear(Request $request) {
-
+    public function clear(Request $request)
+    {
         if(!Hash::check($request->password, $this->user->password)){
             return response()->json(['message' => 'incorrect password'], 403);
         }
