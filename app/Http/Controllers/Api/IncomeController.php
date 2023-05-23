@@ -3,24 +3,26 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\User;
+use App\Models\Income;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreEventRequest;
-use App\Models\Income;
 use App\Repository\IncomeRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\StoreEventRequest;
 
 
 class IncomeController extends Controller
 {
 
     protected $incomeRepository;
+    protected $user;
 
     public function __construct()
     {
-
         $this->incomeRepository = IncomeRepository::getInstance();
 
+        $this->user = User::find(Auth::user()->id);
     }
 
     /**
@@ -88,7 +90,14 @@ class IncomeController extends Controller
 
     public function clear(Request $request)
     {
-        $this->incomeRepository->clearHisIncomes($request);
+
+        if(!Hash::check($request->password, $this->user->password)){
+            return response()->json(['message' => 'incorrect password'], 403);
+        }
+
+        $this->incomeRepository->getIncomes()->each(function($item){
+            $item->delete();
+        });
 
         return response()->json(['message' => 'success'], 202);
     }

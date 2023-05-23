@@ -61,16 +61,4 @@ class IncomeRepository
 
         return $income->delete($income);
     }
-
-    public function clearHisIncomes($request)
-    {
-        if(!Hash::check($request->password, $this->user->password)){
-            return response()->json(['message' => 'incorrect password'], 403);
-        }
-
-        return $this->getIncomes()->each(function($item){
-            $item->delete();
-        });
-
-    }
 }
