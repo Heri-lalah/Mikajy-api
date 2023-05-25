@@ -13,6 +13,10 @@ class Expense extends Model
 
     protected $fillable = ['name','amount', 'currency', 'remark', 'user_id'];
 
+    /**
+     * get the user associated with the expense
+     */
+
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);

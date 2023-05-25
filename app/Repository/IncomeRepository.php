@@ -13,13 +13,9 @@ class IncomeRepository
 
     public $incomes;
 
-    public $user;
-
-    public function __construct()
-    {
-        $this->user = User::find(Auth::user()->id);
-    }
-
+    /**
+     * get the instance of this repository
+     */
     public static function getInstance()
     {
 
@@ -31,11 +27,17 @@ class IncomeRepository
         return self::$instance;
     }
 
+    /**
+     * Get all incomes associated with this authenticated user
+     */
     public function getIncomes()
     {
-        return $this->incomes = $this->user->incomes();
+        return $this->incomes = User::find(Auth::user()->id)->incomes();
     }
 
+    /**
+     * Store a new income for this authenticated user
+     */
     public function storeIncome($income)
     {
 
@@ -43,11 +45,17 @@ class IncomeRepository
 
     }
 
+    /**
+     * show the specified income of this authenticated user
+     */
     public function showIncome($income)
     {
         return $this->getIncomes()->where('id', $income);
     }
 
+    /**
+     * update the specified income of this authenticated user
+     */
     public function updateIncome($data, $id)
     {
         $income = $this->getIncomes()->where('id', $id);
@@ -55,6 +63,9 @@ class IncomeRepository
         return $income->update($data);
     }
 
+    /**
+     * destroy the specified income of this authenticated user
+     */
     public function deleteIncome($id)
     {
         $income = $this->getIncomes()->where('id', $id);

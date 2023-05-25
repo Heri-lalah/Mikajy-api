@@ -1,5 +1,4 @@
 <?php
-
 namespace Tests\Feature;
 
 use App\Models\Income;
@@ -13,11 +12,6 @@ use Laravel\Sanctum\Sanctum;
 
 class IncomeTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public $user;
-
     public $fakeData;
 
     public $firstincomeId;
@@ -26,18 +20,14 @@ class IncomeTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::first();
-
-        $this->withHeaders(['Accept' => 'application/json']);
-
-        Sanctum::actingAs($this->user, ['*']);
+        Sanctum::actingAs(User::first(), ['*']);
 
         $this->fakeData =  [
             'name' => fake()->word(),
             'amount' => rand(1,20) * 100,
             'remark' => fake()->paragraph(1),
             'currency' => 'Euro',
-            'user_id' => $this->user->id
+            'user_id' => Auth::user()->id
         ];
 
         $this->firstincomeId = User::find(Auth::user()->id)->incomes()->first()->id;

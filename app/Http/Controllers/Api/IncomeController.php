@@ -16,6 +16,7 @@ class IncomeController extends Controller
 {
 
     protected $incomeRepository;
+
     protected $user;
 
     public function __construct()
@@ -51,6 +52,7 @@ class IncomeController extends Controller
 
         return response()->json($this->incomeRepository->getIncomes(), 201);
     }
+
     /**
      * Display the specified resource.
      */
@@ -88,6 +90,9 @@ class IncomeController extends Controller
         return response()->json(['message', 'success'], 202);
     }
 
+    /**
+     * Remove all resources from storage.
+     */
     public function clear(Request $request)
     {
 

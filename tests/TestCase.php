@@ -2,8 +2,10 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -12,7 +14,9 @@ abstract class TestCase extends BaseTestCase
     public function setUp():void
     {
         parent::setUp();
-        Artisan::call('migrate');
-        Artisan::call('db:seed');
+
+        Artisan::call('migrate:fresh --seed');
+
+        $this->withHeaders(['Accept' => 'application/json']);
     }
 }

@@ -13,10 +13,6 @@ use Laravel\Sanctum\Sanctum;
 
 class ExpenseTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    protected $user;
 
     protected $fakeData;
 
@@ -26,21 +22,17 @@ class ExpenseTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::first();
-
-        $this->withHeaders(['Accept' => 'application/json']);
-
-        Sanctum::actingAs($this->user, ['*']);
+        Sanctum::actingAs(User::first(), ['*']);
 
         $this->fakeData =  [
             'name' => fake()->word(),
             'amount' => rand(1,20) * 100,
             'remark' => fake()->paragraph(1),
             'currency' => 'EURO',
-            'user_id' => $this->user->id
+            'user_id' => Auth::user()->id,
         ];
 
-        $this->firstExpenseId = Expense::first()->id;
+        $this->firstExpenseId = User::find(Auth::user()->id)->expenses()->first()->id;
 
     }
 

@@ -7,31 +7,30 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Models\User;
+use App\Repository\ExpenseRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ExpenseController extends Controller
 {
-    private $expenses;
 
-    private $user;
+    protected $expenseRepository;
+
     /**
      * Display a listing of the resource.
      */
-
     public function __construct()
     {
-
-        $this->expenses = User::find(Auth::user()->id)->expenses();
-
-        $this->user = User::find(Auth::user()->id);
-
+        $this->expenseRepository = ExpenseRepository::getInstance();
     }
 
 
     public function index()
     {
-        return response()->json(['expense' => $this->expenses]);
+
+        $expenses = $this->expenseRepository->getExpenses();
+
+        return response()->json(['expense' => $expenses]);
     }
 
     /**
@@ -40,18 +39,9 @@ class ExpenseController extends Controller
     public function store(StoreEventRequest $request)
     {
 
-        $expense = Expense::create([
-            'name' => $request->name,
-            'amount' => $request->amount,
-            'remark' => $request->remark,
-            'currency' => $request->currency,
-            'user_id' => $request->user_id
-        ]);
+        $expense = $this->expenseRepository->storeExpense($request);
 
-        return response()->json([
-            'expense' => $expense,
-            'message' => 'Success'
-        ],201);
+        return response()->json(['expense' => $expense, 'message' => 'Success'], 201);
 
     }
 
@@ -70,17 +60,9 @@ class ExpenseController extends Controller
     public function update(StoreEventRequest $request, string $id)
     {
 
-        $expense = Expense::findOrFail($id);
+        $updatedExpense = $this->expenseRepository->updateExpense($request, $id);
 
-        $expense->update([
-            'name' => $request->name,
-            'amount' => $request->amount,
-            'remark' => $request->remark,
-            'currency' => $request->currency,
-            'user_id' => Auth::user()->id
-        ]);
-
-        return response()->json(['message' => 'success'], 202);
+        return response()->json(['expense' => $updatedExpense, 'message' => 'success'], 202);
 
     }
 
@@ -90,9 +72,7 @@ class ExpenseController extends Controller
     public function destroy($expense)
     {
 
-        $expense = Expense::findOrFail($expense);
-
-        $expense->delete();
+        $this->expenseRepository->destroyExpense($expense);
 
         return response()->json(['message' => 'success'], 202);
     }
@@ -102,11 +82,12 @@ class ExpenseController extends Controller
      */
     public function clear(Request $request)
     {
-        if(!Hash::check($request->password, $this->user->password)){
+
+        if(!Hash::check($request->password, Auth::user()->password)){
             return response()->json(['message' => 'incorrect password'], 403);
         }
 
-        $this->expenses->each(function($item){
+        $this->expenseRepository->getExpenses()->each(function($item){
             $item->delete();
         });
 
