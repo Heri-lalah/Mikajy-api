@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('currency')->default('EUR');
             $table->string('remark')->nullable();
 
-            $table->foreignId('user_id')->constrained()->after('id');
+            $table->foreignId('user_id')->constrained();
 
             $table->timestamps();
         });
