@@ -27,8 +27,7 @@ class ExpenseController extends Controller
 
     public function index()
     {
-
-        $expenses = $this->expenseRepository->getExpenses();
+        $expenses = $this->expenseRepository->getExpenses()->get();
 
         return response()->json(['expense' => $expenses]);
     }
@@ -82,7 +81,6 @@ class ExpenseController extends Controller
      */
     public function clear(Request $request)
     {
-
         if(!Hash::check($request->password, Auth::user()->password)){
             return response()->json(['message' => 'incorrect password'], 403);
         }

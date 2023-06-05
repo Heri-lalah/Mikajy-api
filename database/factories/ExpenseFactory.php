@@ -21,7 +21,8 @@ class ExpenseFactory extends Factory
             'name' => fake()->word(1),
             'amount' => rand(1,20) * 100,
             'currency' => 'Ariary',
-            'remark' => fake()->paragraph(1)
+            'remark' => fake()->paragraph(1),
+            'user_id' => User::factory()->create()
         ];
     }
 }
