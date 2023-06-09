@@ -5,90 +5,112 @@ namespace Tests\Feature;
 use App\Models\Expense;
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
 
 class ExpenseTest extends TestCase
 {
-
-    protected $fakeData;
-
-    protected $firstExpenseId;
-
     public function setUp(): void
     {
         parent::setUp();
 
+        User::factory()->create();
         Sanctum::actingAs(User::first(), ['*']);
-
-        $this->fakeData =  [
-            'name' => fake()->word(),
-            'amount' => rand(1,20) * 100,
-            'remark' => fake()->paragraph(1),
-            'currency' => 'EURO',
-            'user_id' => Auth::user()->id,
-        ];
-
-        $this->firstExpenseId = User::find(Auth::user()->id)->expenses()->first()->id;
-
     }
 
     public function test_user_can_get_his_expenses(): void
     {
+        // Arrange
+        Expense::factory(10)->create(['user_id' => User::first()]);
 
+        // Act
         $response = $this->get(route('expense.index'));
 
-        $response->assertStatus(200);
-
+        // Assert
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'expense');
     }
 
     public function test_user_can_add_a_new_expense()
     {
+        // Arrange
+        $expense = Expense::factory()->make(['user_id' => User::first()]);
 
-        $response = $this->post(route('expense.store'), $this->fakeData);
+        // Act
+        $response = $this->post(route('expense.store'), $expense->toArray());
 
-        $response->assertCreated();
+        // Assert
+        $response->assertCreated()
+            ->assertJsonPath('expense.name', $expense->name)
+            ->assertJsonPath('expense.amount', $expense->amount)
+            ->assertJsonPath('expense.currency', $expense->currency)
+            ->assertJsonPath('expense.remark', $expense->remark)
+            ->assertJsonPath('expense.user_id', $expense->user_id);
+        $this->assertEquals(1, Expense::count());
     }
 
     public function test_user_can_update_expense()
     {
+        // Arrange
+        $expense = Expense::factory()->create(['user_id' => User::first()]);
 
-        $response = $this->put(route('expense.update', ['expense' => $this->firstExpenseId,]), [
-            'name' => $this->fakeData['name'],
-            'amount' => $this->fakeData['amount'],
-            'remark' => $this->fakeData['remark'],
-            'currency' => $this->fakeData['currency'],
-            'user_id' => $this->fakeData['user_id'],
+        // Act
+        $response = $this->put(route('expense.update', ['expense' => $expense->id,]), [
+            'name' => 'Car',
+            'amount' => 1000,
+            'currency' => $expense->currency,
+            'user_id' => $expense->user_id
         ]);
 
+        // Assert
         $response->assertAccepted();
+
+        $expense->refresh();
+
+        $this->assertEquals($expense->name, 'Car');
+        $this->assertEquals($expense->amount, 1000);
     }
 
     public function test_user_can_show_expense()
     {
+        // Arrange
+        $expense = Expense::factory()->create(['user_id' => User::first()]);
 
-        $response =$this->get(route('expense.show', ['expense' => $this->firstExpenseId]));
+        // Act
+        $response = $this->get(route('expense.show', ['expense' => $expense->id]));
 
-        $response->assertOk();
-
+        // Assert
+        $response->assertOk()
+            ->assertJsonPath('expense.name', $expense->name)
+            ->assertJsonPath('expense.amount', $expense->amount)
+            ->assertJsonPath('expense.currency', $expense->currency)
+            ->assertJsonPath('expense.remark', $expense->remark)
+            ->assertJsonPath('expense.user_id', $expense->user_id);
     }
 
     public function test_user_can_destroy_expense()
     {
-        $response = $this->delete(route('expense.destroy', ['expense' => Expense::first()->id]));
+        // Arrange
+        $expense = Expense::factory()->create(['user_id' => User::first()]);
 
+        // Act
+        $response = $this->delete(route('expense.destroy', ['expense' => $expense->id]));
+
+        // Assert
         $response->assertAccepted();
-
+        $this->assertEquals(0, Expense::count());
     }
+
 
     public function test_user_can_clear_all_expense()
     {
+        // Arrange
+        Expense::factory(10)->create(['user_id' => User::first()]);
 
+        // Act
         $response =  $this->delete(route('expense.clear', ['password' => 'password']));
 
+        // Assert
         $response->assertAccepted();
+        $this->assertEquals(0, Expense::count());
     }
 }
