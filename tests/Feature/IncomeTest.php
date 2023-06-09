@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 
 class IncomeTest extends TestCase
@@ -20,26 +21,23 @@ class IncomeTest extends TestCase
     {
         parent::setUp();
 
+        User::factory()->create();
         Sanctum::actingAs(User::first(), ['*']);
-
-        $this->fakeData =  [
-            'name' => fake()->word(),
-            'amount' => rand(1,20) * 100,
-            'remark' => fake()->paragraph(1),
-            'currency' => 'Euro',
-            'user_id' => Auth::user()->id
-        ];
-
-        $this->firstincomeId = User::find(Auth::user()->id)->incomes()->first()->id;
-
     }
 
     public function test_user_can_get_his_incomes(): void
     {
+        //Arrange
+        $incomes = Income::factory(10)->create(["user_id" => User::first()]);
 
+        //Act
         $response = $this->get(route('income.index'));
 
-        $response->assertStatus(200);
+        //Assert
+        $response->assertStatus(200)
+                ->assertJson(function(AssertableJson $json){
+                    $json->has('incomes', 10);
+                });
 
     }
 

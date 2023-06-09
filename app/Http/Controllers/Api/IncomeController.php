@@ -31,9 +31,9 @@ class IncomeController extends Controller
      */
     public function index()
     {
-        $incomes = $this->incomeRepository->getIncomes();
+        $incomes = $this->incomeRepository->getIncomes()->get();
 
-        return response()->json($incomes, 200);
+        return response()->json(['incomes' => $incomes], 200);
     }
 
     /**
