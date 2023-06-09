@@ -13,9 +13,6 @@ use Laravel\Sanctum\Sanctum;
 
 class IncomeTest extends TestCase
 {
-    public $fakeData;
-
-    public $firstincomeId;
 
     public function setUp(): void
     {
@@ -27,6 +24,7 @@ class IncomeTest extends TestCase
 
     public function test_user_can_get_his_incomes(): void
     {
+
         //Arrange
         $incomes = Income::factory(10)->create(["user_id" => User::first()]);
 
@@ -44,17 +42,39 @@ class IncomeTest extends TestCase
     public function test_user_can_add_a_new_Income()
     {
 
-        $response = $this->post(route('income.store'), $this->fakeData);
+        //Arrange
+        $income = Income::factory()->make(['user_id' => User::first()]);
 
-        $response->assertCreated();
+        //Act
+        $response = $this->post(route('income.store'), $income->toArray());
+
+        //Assert
+        $response->assertCreated()
+                ->assertJsonPath('income.name', $income->name)
+                ->assertJsonPath('income.amount', $income->amount)
+                ->assertJsonPath('income.currency', $income->currency)
+                ->assertJsonPath('income.remark', $income->remark)
+                ->assertJsonPath('income.user_id', $income->user_id);
+
+        $this->assertEquals(1, Income::count());
     }
 
     public function test_user_can_show_income()
     {
 
-        $response =$this->get(route('income.show', ['income' => $this->firstincomeId]));
+        //Arrange
+        $income = Income::factory()->create(['user_id' => User::first()]);
 
-        $response->assertOk();
+        //Act
+        $response = $this->get(route('income.show', ['income' => $income->id]));
+
+        //Assert
+        $response->assertOk()
+                ->assertJsonPath('income.name', $income->name)
+                ->assertJsonPath('income.amount', $income->amount)
+                ->assertJsonPath('income.currency', $income->currency)
+                ->assertJsonPath('income.remark', $income->remark)
+                ->assertJsonPath('income.user_id', $income->user_id);
 
     }
 

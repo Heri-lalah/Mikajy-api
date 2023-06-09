@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Models\User;
 use App\Models\Income;
+use App\Models\Expense;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repository\IncomeRepository;
@@ -48,19 +49,17 @@ class IncomeController extends Controller
             'currency' => $request->currency,
         ];
 
-        $this->incomeRepository->storeIncome($data);
+        $income = $this->incomeRepository->storeIncome($data);
 
-        return response()->json($this->incomeRepository->getIncomes(), 201);
+        return response()->json(['income' => $income], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Income $income)
     {
-        $data = $this->incomeRepository->showIncome($id);
-
-        return response()->json($data, 200);
+        return response()->json(['income' => $income], 200);
     }
 
     /**
