@@ -81,30 +81,53 @@ class IncomeTest extends TestCase
     public function test_user_can_update_income()
     {
 
-        $response = $this->put(route('income.update', ['income' => $this->firstincomeId]), [
-            'name' => $this->fakeData['name'],
-            'amount' => $this->fakeData['amount'],
-            'remark' => $this->fakeData['remark'],
-            'currency' => $this->fakeData['currency'],
-            'user_id' => $this->fakeData['user_id'],
+        //Arrange
+        $income = Income::factory()->create(['user_id' => User::first()]);
+
+        //Act
+        $response = $this->put(route('income.update', ['income' => $income->id]), [
+            'name' => 'Salary',
+            'amount' => 100000,
+            'remark' => $income->remark,
+            'currency' => $income->currency,
+            'user_id' => $income->user_id,
         ]);
 
+        //Assert
         $response->assertAccepted();
+        $income->refresh();
+
+        $this->assertEquals($income->name, 'Salary');
+        $this->assertEquals($income->amount, 100000);
+
     }
 
     public function test_user_can_destroy_income()
     {
-        $response = $this->delete(route('income.destroy', ['income' => $this->firstincomeId]));
+        //Arrange
+        $income = Income::factory()->create(['user_id' => User::first()]);
 
+        //Act
+        $response = $this->delete(route('income.destroy', ['income' => $income->id]));
+
+        //Assert
         $response->assertAccepted();
+
+        $this->assertEquals(0, Income::count());
 
     }
 
     public function test_user_can_clear_all_income()
     {
 
+        //Arrange
+        Income::factory(10)->create(['user_id' => User::first()]);
+
+        //Act
         $response =  $this->delete(route('income.clear'), ['password' => 'password']);
 
+        //Assert
         $response->assertAccepted();
+        $this->assertEquals(0, Income::count());
     }
 }

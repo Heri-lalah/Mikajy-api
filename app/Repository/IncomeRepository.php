@@ -58,9 +58,9 @@ class IncomeRepository
      */
     public function updateIncome($data, $id)
     {
-        $income = $this->getIncomes()->where('id', $id);
+        $income = $this->getIncomes()->where('id', $id)->update($data);
 
-        return $income->update($data);
+        return $this->getIncomes()->where('id', $id);
     }
 
     /**

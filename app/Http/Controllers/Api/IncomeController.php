@@ -57,7 +57,7 @@ class IncomeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Income $income)
+    public function show(Income  $income)
     {
         return response()->json(['income' => $income], 200);
     }
@@ -74,7 +74,7 @@ class IncomeController extends Controller
             'currency' => $request->currency,
         ];
 
-        $updatedData = $this->incomeRepository->updateIncome($data, $id);
+        $updatedData = $this->incomeRepository->updateIncome($data, $id)->get();
 
         return response()->json($updatedData, 202);
     }
