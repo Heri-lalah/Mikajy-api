@@ -30,6 +30,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         $validation = $request->validate([
             'pseudo' => ['required', 'regex:(^[a-zA-Z0-9])'],
             'password' => ['required', 'min:6']

@@ -37,12 +37,16 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_login()
     {
-        $user = User::find(1)->only(['pseudo', 'password']);
-
+        //Arrange
+        $userFactory = User::factory()->create();
+        $user = User::first()->only(['pseudo']);
         $user['password'] = 'password';
 
+        //Act
         $response = $this->post('api/login', $user);
 
+        //Assert
         $response->assertStatus(200);
+        $this->assertAuthenticatedAs($userFactory);
     }
 }
