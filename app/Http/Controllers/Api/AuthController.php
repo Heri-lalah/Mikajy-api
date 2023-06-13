@@ -14,16 +14,16 @@ class AuthController extends Controller
 
         $validation = $request->validate([
             'name' => ['required'],
-            'pseudo' => ['required', 'unique:users,pseudo', 'regex:(^[a-zA-Z0-9])', 'max:15'],
+            'pseudo' => ['required', 'unique:users,pseudo', 'regex:(^[a-zA-Z0-9])'],
             'phone_number' =>['required'],
             'password' =>['required', 'min:6', 'confirmed'],
             'password_confirmation' => ['required', 'same:password']
         ]);
 
         $user = User::create($validation);
+        Auth::login($user);
 
         $token = $user->createToken('_token')->plainTextToken;
-
         return response()->json(['_token' => $token, 'message' => "Authentication successfully"], 201);
 
     }

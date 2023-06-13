@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthenticationTest extends TestCase
@@ -17,7 +18,7 @@ class AuthenticationTest extends TestCase
     public function test_user_can_register()
     {
 
-        //Create
+        //Arrange
         $password = Hash::make('password');
 
         $user = [
@@ -28,11 +29,15 @@ class AuthenticationTest extends TestCase
             'password_confirmation' => $password
         ];
 
-        //Action
+        //Act
         $response = $this->post('api/register', $user);
 
-        //Assertion
+
+        //Assert
         $response->assertStatus(201);
+        $this->assertAuthenticatedAs(Auth::user($user));
+        $this->assertEquals($user['name'], Auth::user()->name);
+        $this->assertEquals($user['pseudo'], Auth::user()->pseudo);
     }
 
     public function test_user_can_login()
@@ -48,5 +53,7 @@ class AuthenticationTest extends TestCase
         //Assert
         $response->assertStatus(200);
         $this->assertAuthenticatedAs($userFactory);
+        $this->assertEquals($userFactory->name, Auth::user()->name);
+        $this->assertEquals($userFactory->pseudo, Auth::user()->pseudo);
     }
 }
