@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        User::factory(3)
-        ->has(Expense::factory(20))
-        ->has(Income::factory(20))
-        ->create();
+        // User::factory(3)
+        // ->has(Expense::factory(20))
+        // ->has(Income::factory(20))
+        // ->create();
     }
 }

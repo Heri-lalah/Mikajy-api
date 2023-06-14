@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Expense;
+use App\Models\Income;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -55,5 +57,26 @@ class AuthenticationTest extends TestCase
         $this->assertAuthenticatedAs($userFactory);
         $this->assertEquals($userFactory->name, Auth::user()->name);
         $this->assertEquals($userFactory->pseudo, Auth::user()->pseudo);
+    }
+
+    public function test_user_can_destroy_his_account()
+    {
+        //Arrange
+        $user = User::factory()
+                ->hasIncomes(10)
+                ->hasExpenses(5)
+                ->create();
+        $this->actingAs($user);
+
+        //Act
+        $response = $this->delete((route('user.destroy')), ['id' => $user->id, 'password' => 'password']);
+
+        //Assert
+        $response->assertAccepted();
+
+
+        $this->assertEquals(null, User::find($user->id));
+        $this->assertEquals(0, Expense::count());
+        $this->assertEquals(0, Income::count());
     }
 }

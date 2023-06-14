@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Expense;
+use App\Models\Income;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -45,5 +48,26 @@ class AuthController extends Controller
             'message' => 'Authentication successfull',
             '_token' => Auth::user()->createToken('_token')->plainTextToken
         ],200);
+    }
+
+    public function destroy(Request $request)
+    {
+        $validation = $request->validate([
+            'id' => 'required',
+            'password' => 'required'
+        ]);
+
+        if(!Hash::check($validation['password'], Auth::user()->password))
+        {
+            return response()->json(['message' => 'your password is incorrect'], 401);
+        }
+
+        $user = User::find($validation['id']);
+
+        $user->expenses()->delete();
+        $user->incomes()->delete();
+        $user->delete();
+
+        return response()->json(['message' => 'success'], 202);
     }
 }
