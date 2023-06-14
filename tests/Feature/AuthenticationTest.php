@@ -44,6 +44,7 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_login()
     {
+
         //Arrange
         $userFactory = User::factory()->create();
         $user = User::first()->only(['pseudo']);
@@ -61,6 +62,7 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_destroy_his_account()
     {
+
         //Arrange
         $user = User::factory()
                 ->hasIncomes(10)
@@ -73,8 +75,6 @@ class AuthenticationTest extends TestCase
 
         //Assert
         $response->assertAccepted();
-
-
         $this->assertEquals(null, User::find($user->id));
         $this->assertEquals(0, Expense::count());
         $this->assertEquals(0, Income::count());
